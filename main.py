@@ -64,8 +64,3 @@ with virustotal_python.Virustotal(strInputKEY) as vtotal:
 		print(f"Possibly dirty, total number of postives was {totalPositives}")
 	else:
 		print(f"Dirty, total number of postives was {totalPositives}")
-
-
-
-# API key for VT
-# b96a0a596af68dfd28cfef1e2f29f374d5fea2d857d11f0114b65c3f23a8ab50
