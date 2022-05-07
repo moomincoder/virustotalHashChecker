@@ -44,9 +44,6 @@ reExpression = re.compile('^[A-Fa-f0-9]{64}$|^([a-f\d]{32}|[A-F\d]{32})$')
 strInputHash = "Blank"
 strInputKEY = "Blank"
 
-# strInputHash = '36ab33fe616240cad10a72eb0403987a55e6a833bf0348552d38ca10930a6a45'
-# strInputKEY = 'b96a0a596af68dfd28cfef1e2f29f374d5fea2d857d11f0114b65c3f23a8ab50'
-
 strInputHash, strInputKEY = askForUserInput()
 checkHash()
 
