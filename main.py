@@ -1,6 +1,4 @@
-import requests
 import json
-import time
 import virustotal_python
 import re
 import sys
@@ -16,6 +14,7 @@ import sys
 # checking the hash that was given to make sure its MD5 or SHA256
 def checkHash():
 	validHash = False
+	# uses regex to determine if the given hash is valid, and respondes appropriately, if this fails it exits the script
 	validHash = bool(reExpression.match(strInputHash))
 	if validHash:
 		print("Valid hash")
@@ -24,40 +23,44 @@ def checkHash():
 		print("Invalid hash, exiting")
 		sys.exit()
 
-# getting user input
+# getting user input, takes no input and returns strInputHash and strInputKEY, if the API key hasn't changed it exits out of the program, not sure if I should have it check to make sure the key is a SHA256 hash
 def askForUserInput():
 	print("Please input the file hash: ")
 	strInputHash = input()
 	print("Please input your Virustotal API key: ")
 	strInputKEY = input()
+	# if there was no input for the API key display an error and exit out
 	if strInputKEY == "Blank":
 		print("Invalid Virustotal API key")
 		sys.exit()
 	else:
 		return strInputHash, strInputKEY
-
 # input validation
 # sha256 re ^[A-Fa-f0-9]{64}$
 # md5 re /^([a-f\d]{32}|[A-F\d]{32})$/
+# the first part of the this is for checking SHA256, and after the first "|" is for MD5
 reExpression = re.compile('^[A-Fa-f0-9]{64}$|^([a-f\d]{32}|[A-F\d]{32})$')
-
+# create the variables and set them to the string "Blank"
 strInputHash = "Blank"
 strInputKEY = "Blank"
-
+# uses the askForUserInput func to get user input 
 strInputHash, strInputKEY = askForUserInput()
+# call the checkHash func to validate the hash that was given to make sure its either SHA256 or MD5
 checkHash()
-
+# Use the Virustotal API python package to send a request for the validated hash, with the API key that was given
 with virustotal_python.Virustotal(strInputKEY) as vtotal:
 	response = vtotal.request(f"files/{strInputHash}")
-	responseCode = response.status_code
+	# this block handles what happens if the response code is anything other than 200 
+	responseCode = response.status_code # http response code
 	if responseCode != 200:
 		print(f"The API call failed with error code {responseCode}")
 	else:
-		print(f"The HTTP response code was {responseCode}") # http response code
-
+		print(f"The HTTP response code was {responseCode}") 
+	# load the json into a dict
 	jsonResponse = json.loads(response.text)
+	# pull out the "malicious" variable from under data.attributes.last_analysis_stats and set totalPositives to it
 	totalPositives = jsonResponse['data']['attributes']['last_analysis_stats']['malicious']
-
+	# this block handles the output for whether or not the hash comes back clean
 	if totalPositives <= 0:
 		print(f"Clean, total number of postives was {totalPositives}")
 	elif totalPositives <= 5:
