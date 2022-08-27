@@ -3,7 +3,7 @@ import argparse
 import json
 import sys
 import re
-# Made by Isaiah Davis-Stober 5-6-2022
+# Made by Net_Code 5-6-2022
 # A script to check a SHA256 or MD5 hash against Virustotals database
 # Specs:
     # Write a Python or PowerShell script that accepts a file hash value (MD5 or SHA256) from the user and submits the hash to VirusTotal via an API call.
